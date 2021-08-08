@@ -4,6 +4,7 @@ const { User } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
+  
   Query: {
 
     // get logged in user info
@@ -64,15 +65,10 @@ const resolvers = {
         // find and update user matching logged in user id
         const user = await User.findOneAndUpdate(
           { _id: context.user._id },
-          {
-            $addToSet: { savedBooks: book },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
+          { $addToSet: { savedBooks: book } },
+          { new: true, runValidators: true }
         );
-        
+
         // return updated user
         return user;
       }
@@ -81,9 +77,26 @@ const resolvers = {
       throw new AuthenticationError('You need to be logged in!');
     },
 
-    deleteBook: async () => {
+    // delete book from user
+    deleteBook: async (parent, { bookId }, context) => {
 
-    }
+      // user is logged in
+      if (context.user) {
+
+        // find and update user matching logged in user id
+        const user = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedBooks: { bookId: bookId } } },
+          { new: true }
+        );
+
+        // return updated user
+        return user;
+      }
+
+      // user is not logged in
+      throw new AuthenticationError('You need to be logged in!');
+    },
   },
 };
 
