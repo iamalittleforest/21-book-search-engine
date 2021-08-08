@@ -25,17 +25,6 @@ const resolvers = {
 
   Mutation: {
 
-    // create user using provided info
-    createUser: async (parent, { username, email, password }) => {
-
-      // create user using provided username, email, and password
-      const user = await User.create({ username, email, password });
-
-      // create token from user and return both
-      const token = signToken(user);
-      return { token, user };
-    },
-
     // login using provided info
     login: async (parent, { email, password }) => {
 
@@ -50,6 +39,17 @@ const resolvers = {
       if (!correctPw) {
         throw new AuthenticationError('Incorrect password');
       }
+
+      // create token from user and return both
+      const token = signToken(user);
+      return { token, user };
+    },
+
+    // create user using provided info
+    addUser: async (parent, { username, email, password }) => {
+
+      // create user using provided username, email, and password
+      const user = await User.create({ username, email, password });
 
       // create token from user and return both
       const token = signToken(user);
@@ -78,7 +78,7 @@ const resolvers = {
     },
 
     // delete book from user
-    deleteBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, { bookId }, context) => {
 
       // user is logged in
       if (context.user) {
