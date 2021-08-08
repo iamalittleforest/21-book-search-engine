@@ -19,13 +19,13 @@ const SignupForm = () => {
   // set mutation for adding user
   const [addUser, { error, data }] = useMutation(ADD_USER);
 
-  // input change handler
+  // change in
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  // submit form handler
+  // submit form
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -48,7 +48,7 @@ const SignupForm = () => {
       setShowAlert(true);
     }
 
-    // empty fields
+    // clear form values
     setUserFormData({
       username: '',
       email: '',
