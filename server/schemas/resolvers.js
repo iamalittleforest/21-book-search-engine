@@ -4,9 +4,13 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    user: async () => {
-
-    }
+    me: async (parent, args, context) => {
+      if (context.user) {
+        const user = await User.findOne({ _id: context.user._id }).populate('books');
+        return user;
+      }
+      throw new AuthenticationError('Please log in');
+    },
   },
 
   Mutation: {
