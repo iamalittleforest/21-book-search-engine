@@ -1,12 +1,12 @@
 // import dependencies
 const express = require('express');
-const path = require('path');
 const { ApolloServer } = require('apollo-server-express');
+const path = require('path');
 
-// import for GraphQL schema
-const db = require('./config/connection');
+// import for schema
 const { typeDefs, resolvers } = require('./schemas');
 const { authMiddleware } = require('./utils/auth');
+const db = require('./config/connection');
 
 // create Express app
 const app = express();
@@ -19,8 +19,15 @@ const server = new ApolloServer({
   context: authMiddleware,
 });
 
-// set up Express app to use Apollo server features
-server.applyMiddleware({ app });
+// run Apollo server
+(async () => {
+
+  // start Apollo server
+  await server.start();
+
+  // set up Express app to use Apollo server features
+  server.applyMiddleware({ app });
+})()
 
 // set up Express app to parse data
 app.use(express.urlencoded({ extended: true }));
